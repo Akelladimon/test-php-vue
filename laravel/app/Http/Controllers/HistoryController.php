@@ -22,7 +22,7 @@ class HistoryController
 
         $accessLink = AccessLink::where('uuid', '=', $request->uuid)->first();
         $showElements = $request->elements ?? History::SHOW_ELAMENTS;
-        $histories = History::where('user_id', '=', $accessLink->user_id)->take($showElements)->get();
+        $histories = History::where('user_id', '=', $accessLink->user_id)->take($showElements)->latest('updated_at')->get();
 
         return new HistoryCollectionResource($histories);
     }

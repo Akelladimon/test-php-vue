@@ -2,17 +2,32 @@
 To get started, cd into the laravel folder and run docker-compose up.
 
 # Getting started
+# Init Docker
+
 install docker desktop
 
-`cd into the laravel folder`
+cd into the laravel folder
 
-`run docker-compose up`
+`cd laravel`
 
-`run docker-compose exec laravel composer install`
+then:
 
-`run docker-compose exec laravel composer dump-autoload`
+`docker-compose build`
 
-`run docker-compose exec laravel php artisan migrate`
+Wait for everything to be configured
+
+Then:
+
+`docker-compose up -d`
+
+Once all the containers are initialized, you need to connect to the backend container:
+
+
+run `docker-compose exec laravel composer install`
+
+run `docker-compose exec laravel composer dump-autoload`
+
+run `docker-compose exec laravel php artisan migrate`
 
 # Routes
 
@@ -25,3 +40,7 @@ Uncomment the lines in vue.dockerfile comment out what isn't uncommented.
 
 # Note: Windows
  Permissions errors when running docker on windows with laravel happen due to file ownership differences in your project folder vs inside the docker container. I've added a user in docker.compose under laravel to fix this error. No need for chmod or chown commands.
+
+## List route
+GET Login -- http://localhost:8080/
+GET Admin -- http://localhost:8080/admin/private
