@@ -1,5 +1,6 @@
 <template>
   <Navbar/>
+  <PreloaderItem :isLoading="isLoading" />
   <section class="bg-white py-20 lg:py-[120px]">
     <div class="container mx-auto">
       <div class="-mx-4 flex flex-wrap">
@@ -46,28 +47,33 @@
 import Navbar from "@/components/Navbar.vue";
 import {useStore} from "vuex";
 import { useCookies } from "vue3-cookies";
+import PreloaderItem from "@/components/PreloaderItem.vue";
 
 export default {
   name: "History",
-  components: { Navbar },
+  components: { Navbar, PreloaderItem },
 
   setup() {
     const store = useStore();
     const { cookies } = useCookies();
-    let uuid = store.state.uuid.length ? store.state.uuid : cookies.get('uuid')
+    let uuid = cookies.get('uuid').length ? cookies.get('uuid'):  store.state.user.uuid
+    uuid = uuid.length ? uuid : window.location.href.substr(window.location.href.lastIndexOf('/') +1)
 
-    async function getHistoru(){
+    async function getHistory(){
       await store.dispatch('history', uuid).then(() => {
       }).catch((err) => {
         console.log(err);
       })
     }
-    getHistoru()
+    getHistory()
   },
 
   computed: {
     history() {
-      return this.$store.state.history
+      return this.$store.state.history.history
+    },
+    isLoading() {
+      return this.$store.state.history.isLoading
     }
   },
 }

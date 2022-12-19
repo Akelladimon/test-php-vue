@@ -61,12 +61,15 @@
 </template>
 
 <script>
+
 export default {
   name: "Navbar",
 
   computed: {
     uuid() {
-      return this.$store.state.uuid.length ? this.$store.state.uuid : this.$cookies.get('uuid');
+      let uuid = this.$cookies.get('uuid')?.length ? this.$cookies.get('uuid') : this.$store.state.user?.uuid || ''
+      uuid = uuid.length ? uuid : window.location.href.substr(window.location.href.lastIndexOf('/') +1)
+      return uuid;
     }
   },
 }

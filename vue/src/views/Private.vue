@@ -1,5 +1,6 @@
 <template>
   <Navbar/>
+  <PreloaderItem :isLoading="isLoading" />
   <div class="bg-gray-100">
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
       <div class="mx-auto ">
@@ -129,11 +130,12 @@
 <script>
 import Navbar from "@/components/Navbar.vue";
 import {useStore} from "vuex";
+import PreloaderItem from "@/components/PreloaderItem.vue";
 
 export default {
   name: 'Private',
 
-  components: {Navbar},
+  components: { Navbar, PreloaderItem },
 
   setup() {
     const store = useStore();
@@ -142,7 +144,7 @@ export default {
       if (page < 1) {
         page = 1
       }
-      console.log(page);
+
       try {
         await store.dispatch('getUsers', page).then(() => {
         }).catch((err) => {
@@ -161,10 +163,13 @@ export default {
   },
   computed: {
     users() {
-      return this.$store.state.users
+      return this.$store.state.admin.users
     },
     adminPage() {
-      return this.$store.state.adminPage
+      return this.$store.state.admin.adminPage
+    },
+    isLoading() {
+      return this.$store.state.admin.isLoading
     }
   },
   methods: {

@@ -1,5 +1,6 @@
 <template>
   <Navbar/>
+  <PreloaderItem :isLoading="isLoading" />
   <section class="bg-white pt-20 pb-12 lg:pt-[120px] lg:pb-[90px]">
     <div class="container mx-auto">
       <div
@@ -38,20 +39,30 @@ import Navbar from "@/components/Navbar.vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 import { useCookies } from "vue3-cookies";
+import PreloaderItem from "@/components/PreloaderItem.vue";
 
 export default {
   name: "Game",
-  components: { Navbar },
+  components: { Navbar, PreloaderItem },
+
+  data: () => ({
+      uuid: '',
+  }),
+
+  mounted() {
+    this.uuid = this.$cookies.get('uuid').length ? this.$cookies.get('uuid') : this.$store.state.user.uuid;
+  },
 
   setup() {
     const store = useStore();
     const router = useRouter();
     const { cookies } = useCookies();
-    let uuid = store.state.uuid.length ? store.state.uuid : cookies.get('uuid')
+
+    let uuid = cookies.get('uuid').length ? cookies.get('uuid') : store.state.user?.uuid;
 
     if (!uuid.length) {
        uuid = window.location.href.substr(window.location.href.lastIndexOf('/') +1)
-       store.commit('setUuid', window.location.href.substr(window.location.href.lastIndexOf('/') +1))
+       store.commit('setUuid',uuid)
     }
 
     async function accessGame(){
@@ -70,14 +81,16 @@ export default {
 
   computed: {
     win() {
-      return this.$store.state.win
+      return this.$store.state.user.win
+    },
+    isLoading() {
+      return this.$store.state.user.isLoading
     }
   },
 
   methods: {
     async getGame() {
-      let uuid = this.$store.state.uuid.length ?this.$store.state.uuid : this.$cookies.get('uuid')
-      await this.$store.dispatch('game', uuid).then(() => {}).catch((err) => {
+      await this.$store.dispatch('game', this.uuid).then(() => {}).catch((err) => {
         console.log(err);
       })
     }
