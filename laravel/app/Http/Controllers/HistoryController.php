@@ -19,10 +19,12 @@ class HistoryController
         if (!$request->uuid) {
             abort(404);
         }
-
+        $histories = [];
         $accessLink = AccessLink::where('uuid', '=', $request->uuid)->first();
         $showElements = $request->elements ?? History::SHOW_ELAMENTS;
-        $histories = History::where('user_id', '=', $accessLink->user_id)->take($showElements)->latest('updated_at')->get();
+        if (!is_null($accessLink)) {
+            $histories = History::where('user_id', '=', $accessLink->user_id)->take($showElements)->latest('updated_at')->get();
+        }
 
         return new HistoryCollectionResource($histories);
     }
